@@ -501,8 +501,10 @@ function getIdentityMatrix(n) {
  *     0, 100 => [ 0, 1, 2, ..., 100 ]
  *     3, 3   => [ 3 ]
  */
-function getIntervalArray(/* start, end */) {
-  throw new Error('Not implemented');
+function getIntervalArray(start, end) {
+  const length = end - start + 1;
+  const arr = new Array(length).fill(start);
+  return arr.map((el, ind) => el + ind);
 }
 
 /**
@@ -516,8 +518,8 @@ function getIntervalArray(/* start, end */) {
  *   [ 'a', 'a', 'a', 'a' ]  => [ 'a' ]
  *   [ 1, 1, 2, 2, 3, 3, 4, 4] => [ 1, 2, 3, 4]
  */
-function distinct(/* arr */) {
-  throw new Error('Not implemented');
+function distinct(arr) {
+  return Array.from(new Set(arr));
 }
 
 /**
@@ -550,10 +552,17 @@ function distinct(/* arr */) {
  *    "Poland" => ["Lodz"]
  *   }
  */
-function group(/* array, keySelector, valueSelector */) {
-  throw new Error('Not implemented');
+function group(array, keySelector, valueSelector) {
+  const map = new Map();
+  const mySet = new Set(array.map((el) => keySelector(el))); // объект с уникальными ключами
+  const keys = Array.from(mySet); // массив с  уникальными ключами
+  keys.map( // мапаем массив с ключами
+    (el) => map.set(el, array.filter( // попутно устанавливаем в мэп все ключи, а значение для мэп
+      (item) => keySelector(item) === el, // берем из отфильтрованного по тек.эл-ту массива с ключом
+    ).map((item) => valueSelector(item))), // и по этому ключу оттуда берем все значения
+  );
+  return map;
 }
-
 
 /**
  * Projects each element of the specified array to a sequence
@@ -568,8 +577,10 @@ function group(/* array, keySelector, valueSelector */) {
  *   [[1, 2], [3, 4], [5, 6]], (x) => x     =>   [ 1, 2, 3, 4, 5, 6 ]
  *   ['one','two','three'], (x) => x.split('')  =>   ['o','n','e','t','w','o','t','h','r','e','e']
  */
-function selectMany(/* arr, childrenSelector */) {
-  throw new Error('Not implemented');
+function selectMany(arr, childrenSelector) {
+  const arr1 = arr.map((el) => childrenSelector(el));
+  const arr2 = arr1.flat();
+  return arr2;
 }
 
 
@@ -585,8 +596,20 @@ function selectMany(/* arr, childrenSelector */) {
  *   ['one','two','three'], [2]       => 'three'  (arr[2])
  *   [[[ 1, 2, 3]]], [ 0, 0, 1 ]      => 2        (arr[0][0][1])
  */
-function getElementByIndexes(/* arr, indexes */) {
-  throw new Error('Not implemented');
+function getElementByIndexes(arr, indexes) {
+  const l = indexes.length;
+  const ind1 = indexes[0];
+  const ind2 = indexes[1];
+  const ind3 = indexes[2];
+  let result;
+  if (l === 1) {
+    result = arr[ind1];
+  } else if (l === 2) {
+    result = arr[ind1][ind2];
+  } else if (l === 3) {
+    result = arr[ind1][ind2][ind3];
+  }
+  return result;
 }
 
 
@@ -608,8 +631,26 @@ function getElementByIndexes(/* arr, indexes */) {
  *   [ 1, 2, 3, 4, 5, 6, 7, 8 ]   =>  [ 5, 6, 7, 8, 1, 2, 3, 4 ]
  *
  */
-function swapHeadAndTail(/* arr */) {
-  throw new Error('Not implemented');
+function swapHeadAndTail(arr) {
+  const l = arr.length;
+  let arr2 = [];
+  if (l === 1) {
+    arr2 = arr;
+  } else if (l % 2 === 0) {
+    const l1 = l / 2;
+    const head = arr.slice(0, l1);
+    const tail = arr.slice(l1);
+    arr2.push(tail);
+    arr2.push(head);
+  } else if (l % 2 !== 0) {
+    const l1 = Math.floor(l / 2);
+    const head = arr.slice(0, l1);
+    const tail = arr.slice(l1 + 1);
+    arr2.push(tail);
+    arr2.push(arr[l1]);
+    arr2.push(head);
+  }
+  return arr2.flat(Infinity);
 }
 
 
